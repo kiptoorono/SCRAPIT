@@ -1,0 +1,305 @@
+# Universal News Scraper - Site Configuration
+# This file contains all site-specific knowledge for the web scraper
+# Modifications here do NOT require code changes
+
+global:
+  default_user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  default_timeout: 15
+  min_request_interval: 1.0  # seconds between requests
+  max_retries: 3
+  connection_pool_size: 20
+
+sites:
+  https://www.the-star.co.ke:
+    name: "The Star Kenya"
+    domain: "the-star.co.ke"
+    base_url: "https://www.the-star.co.ke"
+    
+    # Entry points for Scout to discover articles
+    entry_points:
+      - path: "/"
+        name: "homepage"
+      - path: "/counties"
+        name: "counties_main"
+      - path: "/business"
+        name: "business_main"
+      - path: "/sports"
+        name: "sports_main"
+      - path: "/sasa"
+        name: "lifestyle_main"
+      - path: "/health"
+        name: "health"
+      - path: "/climate-change"
+        name: "climate_change"
+    
+    # Extraction selectors - Tier 1 (Precision)
+    selectors:
+      title:
+        primary: "h1"
+        fallback:
+          - "h3.line-clamp-3"
+          - "span.headline"
+      
+      content:
+        primary: "div.story-content"
+        fallback:
+          - "div.article-body"
+          - "article"
+      
+      author:
+        primary: "span.author-name"
+        fallback:
+          - "a[rel='author']"
+          - "span[data-author]"
+      
+      date:
+        primary: "small.text-wrap.text-center"
+        fallback:
+          - "span.article-date"
+          - "time[datetime]"
+          - "span[data-published]"
+      
+      image:
+        primary: "img.article-image"
+        fallback:
+          - "img[alt*='article']"
+          - "picture img"
+    
+    # Date parsing patterns for this site
+    date_patterns:
+      - "%d %B %Y - %H:%M"
+      - "%d %B %Y"
+      - "%A %d %B, %Y %I:%M %p"
+    
+    # Pagination configuration
+    pagination:
+      type: "button_load_more"  # button, url_param, ajax, infinite_scroll
+      selector: "button:contains('load more articles')"
+      ajax_endpoint: null
+      url_param_template: null
+      next_page_selector: null
+    
+    # Site-specific rate limiting
+    rate_limit:
+      requests_per_minute: 40
+      respect_robots_txt: true
+      crawl_delay_override: 1.5
+    
+    # Boilerplate text to filter out
+    boilerplate_phrases:
+      - "Subscribe to our newsletter"
+      - "Follow us on"
+      - "Share this article"
+      - "Related articles"
+      - "Premium content"
+    
+    # Anti-scraping measures to detect
+    anti_scraping:
+      premium_tag_selector: "h3.text-primary:contains('premium content')"
+      paywall_keywords:
+        - "premium"
+        - "subscribers only"
+        - "login required"
+
+  https://www.thestandard.co.ke:
+    name: "The Standard Kenya"
+    domain: "thestandard.co.ke"
+    base_url: "https://www.thestandard.co.ke"
+    
+    entry_points:
+      - path: "/"
+        name: "homepage"
+      - path: "/news"
+        name: "news"
+      - path: "/politics"
+        name: "politics"
+      - path: "/business"
+        name: "business"
+      - path: "/sports"
+        name: "sports"
+      - path: "/technology"
+        name: "technology"
+      - path: "/lifestyle"
+        name: "lifestyle"
+    
+    # Extraction selectors for The Standard
+    selectors:
+      title:
+        primary: "h1.post-title"
+        fallback:
+          - "h1[class*='headline']"
+          - "span.bf8pwj6RNn"
+      
+      content:
+        primary: "div.post-content"
+        fallback:
+          - "div.bf8pwj6RNn"
+          - "article.post"
+      
+      author:
+        primary: "span.author"
+        fallback:
+          - "div[class*='byline']"
+          - "a.author-link"
+      
+      date:
+        primary: "time.publish-date"
+        fallback:
+          - "span.published-date"
+          - "span[data-timestamp]"
+      
+      image:
+        primary: "img.featured-image"
+        fallback:
+          - "img[class*='post-image']"
+    
+    # Date parsing patterns
+    date_patterns:
+      - "%B %d, %Y"
+      - "%d %b %Y"
+      - "%A, %B %d, %Y %I:%M %p"
+    
+    # Pagination for The Standard uses query parameters
+    pagination:
+      type: "url_param"
+      url_param_name: "start"
+      param_increment: 24  # The Standard pagination uses ?start=24, ?start=48, etc.
+      per_page: 24
+      next_page_selector: "a.next-page"
+    
+    # Rate limiting
+    rate_limit:
+      requests_per_minute: 35
+      respect_robots_txt: true
+      crawl_delay_override: 1.7
+    
+    # Boilerplate phrases
+    boilerplate_phrases:
+      - "Share with friends"
+      - "Breaking News"
+      - "About The Standard"
+      - "RELATED ARTICLES"
+    
+    # Anti-scraping
+    anti_scraping:
+      paywall_keywords:
+        - "Sign in to continue"
+        - "Subscribe to read more"
+
+# Tier 2 fallback: Standardized metadata extraction patterns
+metadata_fallback:
+  json_ld_types:
+    - "NewsArticle"
+    - "Article"
+  
+  og_tags:
+    title: "og:title"
+    description: "og:description"
+    image: "og:image"
+    url: "og:url"
+    publish_time: "article:published_time"
+    author: "article:author"
+  
+  twitter_tags:
+    title: "twitter:title"
+    description: "twitter:description"
+    image: "twitter:image"
+    creator: "twitter:creator"
+  
+  microdata_selectors:
+    - "span[itemprop='headline']"
+    - "span[itemprop='author']"
+    - "time[itemprop='datePublished']"
+    - "img[itemprop='image']"
+
+# Tier 3 heuristic parameters
+heuristic_analysis:
+  # Text density analysis
+  density_thresholds:
+    min_paragraph_density: 0.15  # ratio of p tags to all text nodes
+    min_word_length: 100  # minimum words in content
+    max_link_density: 0.30  # max allowed link ratio in content
+    min_avg_paragraph_length: 50  # words
+
+  # Content block analysis
+  title_heuristics:
+    max_title_length: 500
+    min_title_length: 10
+    prefer_first_h1: true
+  
+  # Author detection patterns
+  author_patterns:
+    - "^[Bb]y\\s+(.+?)(?:\\s+on\\s+|\\n|$)"
+    - "^[Ww]ritten\\s+by\\s+(.+?)(?:\\s+on\\s+|\\n|$)"
+    - "^[Aa]uthor:?\\s+(.+?)(?:\\n|$)"
+
+# Tier 4: Fallback logging
+fallback_logging:
+  failed_extractions_dir: "failed_extractions"
+  log_html: true
+  log_screenshot_url: true  # Store URL for manual inspection
+  log_format: "json"  # json or html
+  retention_days: 30
+
+# Data normalization standards
+data_normalization:
+  languages:
+    - "en"
+    - "sw"  # Swahili for Kenyan content
+  
+  date_output_format: "%Y-%m-%d %H:%M:%S"
+  date_timezone: "UTC"
+  
+  # Standard categories mapping
+  category_mapping:
+    https://www.the-star.co.ke:
+      counties: "Local"
+      business: "Business"
+      sports: "Sports"
+      sasa: "Lifestyle"
+      health: "Health"
+      climate-change: "Environment"
+    
+    https://www.thestandard.co.ke:
+      news: "National"
+      politics: "Politics"
+      business: "Business"
+      sports: "Sports"
+      technology: "Technology"
+      lifestyle: "Lifestyle"
+  
+  # Author name standardization
+  author_format: "FirstName LastName"  # or "LastName, FirstName"
+  
+  # Content cleaning rules
+  content_cleaning:
+    remove_html_tags: true
+    preserve_semantic_tags: false  # Keep <strong>, <em>, etc.
+    normalize_whitespace: true
+    remove_extra_newlines: true
+    min_content_length: 100  # chars
+
+# Output schema
+output_schema:
+  required_fields:
+    - url
+    - title
+    - content
+    - scraped_at
+  
+  optional_fields:
+    - author
+    - published_date
+    - modified_date
+    - category
+    - tags
+    - language
+    - image_url
+    - confidence_scores
+  
+  metadata_fields:
+    - source_site
+    - extraction_method
+    - extraction_confidence
+    - extraction_duration_ms
+    - scraper_version
