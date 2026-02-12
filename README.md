@@ -1,8 +1,10 @@
 # SCRAP!T - Universal News Scraper
 
+![SCRAP!T Logo](src/Scrapit.png)
+
 A production-grade, fully configuration-driven news scraper built with advanced architecture patterns. No site-specific logic in code—all configuration lives in `sites_config.yaml`.
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ### Four-Tier Fallback Extraction System
 
@@ -31,7 +33,7 @@ A production-grade, fully configuration-driven news scraper built with advanced 
 - Category mapping
 - Output validation
 
-## 📁 Folder Structure
+## Folder Structure
 
 ```
 News scrappers/
@@ -56,7 +58,7 @@ News scrappers/
 └── README.md                    # This file
 ```
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Install Dependencies
 
@@ -112,7 +114,7 @@ Articles saved to `data/articles.json`.
 python main.py full --site the-star
 ```
 
-## 📋 Configuration (`sites_config.yaml`)
+##  Configuration (`sites_config.yaml`)
 
 ### Adding a New Site
 
@@ -235,7 +237,7 @@ Multiple realistic fingerprints (Chrome Windows, Chrome Mac, Firefox, etc.) with
 - Applies cooldowns on 429 (rate limit), 403 (forbidden)
 - Auto-detects and deprioritizes failing proxies
 
-## 📈 Monitoring & Statistics
+##  Monitoring & Statistics
 
 ### Scout Statistics
 
@@ -302,7 +304,7 @@ python main.py scout --max-pages 20
 python main.py scout --max-pages 2
 ```
 
-## 🧪 Testing & Debugging
+##  Testing & Debugging
 
 ### Enable Debug Logging
 ```python
@@ -329,7 +331,7 @@ ls data/failed_extractions/the-star/
 cat data/failed_extractions/the-star/abc123_metadata.json
 ```
 
-## 📝 Customization
+##  Customization
 
 ### Adding Custom Extractors
 Subclass `ExtractionEngine` and override tier methods:
@@ -360,7 +362,7 @@ sites:
       - "Another phrase"
 ```
 
-## ⚠️ Ethical Guidelines
+##  Ethical Guidelines
 
 - Always check site's `robots.txt` before scraping
 - Respect `crawl-delay` and `request-rate` directives
@@ -369,7 +371,7 @@ sites:
 - Consider reaching out to site owners for permission
 - Use scraped data responsibly
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Site Returns 403 Forbidden
 - Update User-Agent in config
@@ -388,7 +390,7 @@ sites:
 - Smaller batch sizes
 - Clear `data/failed_extractions` periodically
 
-## 📚 Advanced Topics
+##  Advanced Topics
 
 ### URL Deduplication
 System uses URL hash to prevent re-scraping:
@@ -409,11 +411,11 @@ python main.py full --site the-star
 python main.py full --site the-standard
 ```
 
-## 📖 Reference Implementation
+##  Reference Implementation
 
 Configuration for The Star and The Standard already included in `sites_config.yaml`.
 
-## 🤝 Contributing
+##  Contributing
 
 To improve scrapers:
 1. Inspect failed extractions in `data/failed_extractions/`
@@ -421,10 +423,10 @@ To improve scrapers:
 3. Test with: `python main.py full --site site-name`
 4. Commit improved config
 
-## 📄 License
+##  License
 
 This project is provided as-is for educational purposes.
 
 ---
 
-**Built with ❤️ for robust, maintainable web scraping**
+**Built with  for robust, maintainable web scraping**

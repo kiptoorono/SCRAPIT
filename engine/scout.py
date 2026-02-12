@@ -61,18 +61,23 @@ class Scout:
         Discover article URLs from a site
         
         Args:
-            site_name: Site identifier (e.g., 'the-star')
+            site_name: Site identifier (e.g., 'the-star') or full URL for generic fallback
             max_pages_per_section: Max pages to scan per section
         """
-        site_config = self.config['sites'].get(site_name)
-        if not site_config:
-            logger.error(f"Site config not found: {site_name}")
-            return
-        
         # Clear queue for fresh discovery of this specific site
         self.url_queue = []
         self.seen_urls = set()
         logger.info(f"Starting Scout for {site_name} (cleared previous queue)")
+        
+        site_config = self.config['sites'].get(site_name)
+        
+        # If config not found, use generic fallback mode
+        if not site_config:
+            logger.warning(f"Site config not found for '{site_name}'. Using generic fallback discovery mode.")
+            await self._discover_generic(site_name, max_pages_per_section)
+            self._save_queue()
+            logger.info(f"Scout complete (generic). Queue size: {len(self.url_queue)}")
+            return
         
         entry_points = site_config.get('entry_points', [])
         base_url = site_config.get('base_url', '')
@@ -130,6 +135,98 @@ class Scout:
                 break
             
             await asyncio.sleep(1)  # Rate limiting
+    
+    async def _discover_generic(self, site_url: str, max_pages: int = 5):
+        """
+        Generic discovery for unconfigured sites
+        Tries to discover articles from a site without explicit config
+        """
+        # Normalize URL to ensure it's properly formatted
+        if not site_url.startswith('http'):
+            site_url = 'https://' + site_url
+        
+        # Remove trailing slash for consistency
+        site_url = site_url.rstrip('/')
+        
+        # Create a minimal config for fetching
+        generic_config = self.config.get('global', {})
+        if not generic_config:
+            generic_config = {'default_timeout': 15}
+        
+        visited = set()
+        current_url = site_url
+        page_count = 0
+        
+        async with aiohttp.ClientSession() as session:
+            while current_url and current_url not in visited and page_count < max_pages:
+                visited.add(current_url)
+                page_count += 1
+                
+                logger.info(f"Scouting page {page_count} (generic): {current_url}")
+                
+                try:
+                    # Fetch with generic timeout
+                    timeout = aiohttp.ClientTimeout(total=generic_config.get('default_timeout', 15))
+                    async with session.get(current_url, timeout=timeout, ssl=False) as resp:
+                        if resp.status != 200:
+                            logger.warning(f"Failed to fetch {current_url}: {resp.status}")
+                            break
+                        html = await resp.text()
+                    
+                    soup = BeautifulSoup(html, 'html.parser')
+                    
+                    # Extract article links using generic filtering
+                    article_urls = self._extract_article_links(
+                        soup, current_url, site_url, 'homepage'
+                    )
+                    logger.info(f"Found {len(article_urls)} articles on page {page_count}")
+                    
+                    # Try to find next page link (generic approach)
+                    current_url = self._find_next_page_generic(soup, current_url)
+                    
+                except asyncio.TimeoutError:
+                    logger.warning(f"Timeout on {current_url}")
+                    break
+                except Exception as e:
+                    logger.error(f"Generic scout error on {current_url}: {e}")
+                    break
+                
+                await asyncio.sleep(1)  # Rate limiting
+    
+    def _find_next_page_generic(self, soup: BeautifulSoup, current_url: str) -> Optional[str]:
+        """
+        Find next page URL using generic pagination patterns
+        """
+        # Common pagination selectors
+        next_patterns = [
+            'a[rel="next"]',
+            'a.next',
+            'a[aria-label*="next"]',
+            'a:contains("Next")',
+            'a:contains("next")',
+            'li.next a',
+            'span.pagination a:last-child',
+        ]
+        
+        for pattern in next_patterns:
+            try:
+                next_link = soup.select_one(pattern)
+                if next_link and next_link.get('href'):
+                    next_url = urljoin(current_url, next_link['href'])
+                    if next_url != current_url:  # Avoid infinite loops
+                        return next_url
+            except:
+                continue
+        
+        # Try to find pagination by looking for numbered links
+        for link in soup.find_all('a', href=True):
+            text = link.get_text(strip=True).lower()
+            if text in ['2', 'next', 'next page', '»']:
+                next_url = urljoin(current_url, link['href'])
+                if next_url != current_url:
+                    return next_url
+        
+        return None
     
     async def _fetch_url(self, session: aiohttp.ClientSession, url: str,
                         site_config: Dict) -> Optional[str]:

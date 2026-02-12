@@ -197,7 +197,7 @@ class Harvester:
             self.stats['successful'] += 1
             
             duration = time.time() - start_time
-            logger.info(f"✓ Harvested {url} ({duration:.1f}s)")
+            logger.info(f"[SUCCESS] Harvested {url} ({duration:.1f}s)")
             
             # Mark as processed
             self.scout.mark_url_processed(url, success=True)

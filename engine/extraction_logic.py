@@ -108,7 +108,7 @@ class ExtractionEngine:
         if result.is_complete():
             result.extraction_method = 'tier1'
             result.extraction_duration_ms = (datetime.utcnow() - start_time).total_seconds() * 1000
-            logger.info(f"✓ Tier 1 succeeded for {url}")
+            logger.info(f"[SUCCESS] Tier 1 succeeded for {url}")
             return result
         
         # Tier 2: Metadata extraction
@@ -118,7 +118,7 @@ class ExtractionEngine:
         if result.is_complete():
             result.extraction_method = 'tier2'
             result.extraction_duration_ms = (datetime.utcnow() - start_time).total_seconds() * 1000
-            logger.info(f"✓ Tier 2 succeeded for {url}")
+            logger.info(f"[SUCCESS] Tier 2 succeeded for {url}")
             return result
         
         # Tier 3: Heuristic analysis
@@ -128,7 +128,7 @@ class ExtractionEngine:
         if result.is_complete():
             result.extraction_method = 'tier3'
             result.extraction_duration_ms = (datetime.utcnow() - start_time).total_seconds() * 1000
-            logger.info(f"✓ Tier 3 succeeded for {url}")
+            logger.info(f"[SUCCESS] Tier 3 succeeded for {url}")
             return result
         
         # Tier 4: Log failure for manual review
