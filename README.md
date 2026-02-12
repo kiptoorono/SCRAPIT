@@ -168,7 +168,7 @@ sites:
       crawl_delay_override: 2.0
 ```
 
-## 🔄 Extraction Flow
+##  Extraction Flow
 
 ```
 HTML → Tier 1 (CSS Selectors)
@@ -182,7 +182,7 @@ HTML → Tier 1 (CSS Selectors)
 
 Each tier has confidence scores assigned to extracted fields.
 
-## 📊 Output Format
+##  Output Format
 
 Articles saved in `data/articles.json`:
 
@@ -207,7 +207,7 @@ Articles saved in `data/articles.json`:
 }
 ```
 
-## 🛡️ Stealth Features
+## Stealth Features
 
 ### Sticky Sessions
 - Each "browsing session" maintains:
@@ -265,7 +265,7 @@ scraper.harvester.get_stats()
 # }
 ```
 
-## 🔍 Failure Analysis (Tier 4)
+##  Failure Analysis (Tier 4)
 
 When all extraction methods fail, the system logs:
 - Raw HTML (`failed_extractions/{site}/{id}_page.html`)
@@ -275,7 +275,7 @@ When all extraction methods fail, the system logs:
 
 Use these logs to iteratively improve `sites_config.yaml`.
 
-## 🎯 Performance Tuning
+##  Performance Tuning
 
 ### Concurrent Extraction
 ```bash
