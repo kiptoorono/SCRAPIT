@@ -244,7 +244,14 @@ Site is blocking requests. Try:
      requests_per_minute: 10
    ```
 
-2. Add proxies to `proxies.json`:
+2. Add proxies to `proxies.json` for IP rotation (prevents detection and unblocks access):
+   
+   Proxy rotation serves two purposes:
+   - **Bot Detection Evasion**: Each request appears from different IP
+   - **IP Block Prevention**: If your IP is blocked, proxies allow continued access
+   
+   Without proxies, a blocked IP means you can't visit the site manually either.
+   
    ```json
    [
      {
@@ -252,11 +259,17 @@ Site is blocking requests. Try:
        "port": "8080",
        "username": "user",
        "password": "pass"
+     },
+     {
+       "address": "proxy2.example.com",
+       "port": "8080",
+       "username": "user",
+       "password": "pass"
      }
    ]
    ```
 
-3. Rotate User-Agent (happens automatically)
+3. User-Agent rotation happens automatically
 
 ### Extraction Confidence Low
 

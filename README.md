@@ -2,14 +2,14 @@
 
 ![SCRAP!T Logo](src/Scrapit.png)
 
-A production-grade, configuration-driven news scraper for any news website. No hardcoded site logic—all configuration lives in `sites_config.yaml`.
+A configuration-driven news scraper for any news website. No hardcoded site logic—all configuration lives in `sites_config.yaml`.
 
 ## Features
 
 - **Configuration-Driven**: All site logic in YAML, no code changes
 - **4-Tier Extraction**: CSS selectors → metadata → heuristics → failure logging
 - **Anti-Detection**: Browser fingerprints, TLS mimicry, sticky sessions, adaptive throttling
-- **Proxy Support**: Health monitoring, automatic cooldowns, rate limiting
+- **Proxy Rotation**: Rotate IPs to avoid IP blocking and site detection, maintain access when your own IP is blocked
 - **Resumable**: Persistent state—stop and resume without data loss
 - **Data Quality**: Date normalization, content cleaning, author standardization
 

@@ -326,6 +326,27 @@ def _tier4_log_failure(html, url, site_name, result):
 
 **Purpose**: Manage proxy pool and maintain behavioral realism
 
+**Strategic Role of Proxy Rotation**:
+
+Proxy rotation serves multiple critical functions:
+
+1. **Bot Detection Prevention**: Each request appears from different IP address, making automated patterns harder to detect and block
+2. **IP Block Evasion**: If your own IP gets rate-limited or blocked, rotating proxies allows continued access (without proxies, a blocked IP means you can't visit the site manually either)
+3. **Geographic Diversity**: Requests from different locations appear more organic
+4. **Distributed Load**: Spreads requests across multiple IPs, reducing per-IP request rates
+
+Without proxy rotation:
+- Your single IP gets rate-limited quickly
+- Site owners can permanently block your IP
+- You lose all ability to scrape or visit that site manually
+- Automated access is easily detectable
+
+With rotating proxies:
+- Each request rotates through different IPs
+- Even if one proxy IP is blocked, others continue working
+- Request patterns distributed, harder to detect as bot
+- Access survives your personal IP block
+
 #### Proxy Credentials & Format
 ```python
 # Input (from proxies.json)
@@ -423,6 +444,9 @@ def calculate_delay(domain, site_config, last_response_time):
   - Immediately back off 2-5x slower
 
 #### Proxy Health Monitoring
+
+Ensures proxies remain effective at evading detection and avoiding blocks:
+
 ```python
 proxy_health = {
     'http://user:pass@ip:port': {
@@ -438,10 +462,17 @@ success_rate = 150 / 155 = 0.968
 weight = max(0.1, success_rate) = 0.968
 # Higher success rate = more likely to be selected
 
-# After 403 Forbidden (blocked):
+# After 403 Forbidden (proxy IP blocked by site):
 cooldown_until = now + 1 hour
-# Proxy won't be selected for 1 hour
+# This proxy temporarily disabled, uses others for continued access
+
+# After 429 Rate Limit:
+cooldown_until = now + 30 minutes  
+# Back off to avoid cascading blocks
 ```
+
+The health monitoring keeps only effective proxies in rotation. If a proxy IP gets blocked or rate-limited, it enters cooldown while others maintain access, ensuring the scraper never completely loses ability to access the site.
+
 
 ### 6. Data Normalization Pipeline
 
