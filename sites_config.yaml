@@ -303,3 +303,96 @@ output_schema:
     - extraction_confidence
     - extraction_duration_ms
     - scraper_version
+https://edition.cnn.com:
+    name: "CNN"
+    domain: "cnn.com"
+    base_url: "https://edition.cnn.com"
+    
+    # Entry points - the URLs Scout will start from to discover articles
+    entry_points:
+      - path: "/"
+        name: "homepage"
+      - path: "/us"
+        name: "us_news"
+      - path: "/world"
+        name: "world"
+      - path: "/politics"
+        name: "politics"
+      - path: "/business"
+        name: "business"
+      - path: "/entertainment"
+        name: "entertainment"
+      - path: "/sports"
+        name: "sports"
+      - path: "/health"
+        name: "health"
+      - path: "/style"
+        name: "style"
+      - path: "/travel"
+        name: "travel"
+    
+    # CSS selectors to extract content
+    selectors:
+      title:
+        primary: "h1"
+        fallback:
+          - "h2.container__headline"
+          - "[data-test-id='headline']"
+      
+      content:
+        primary: "div[data-article-body]"
+        fallback:
+          - "div.article__content"
+          - "article"
+      
+      author:
+        primary: "span.metadata__author"
+        fallback:
+          - "a[rel='author']"
+          - "span[data-byline]"
+      
+      date:
+        primary: "span[data-test-id='timestamp']"
+        fallback:
+          - "time[datetime]"
+          - "span.metadata__publish-time"
+      
+      image:
+        primary: "img.featured-img"
+        fallback:
+          - "img[class*='hero']"
+          - "picture img:first-of-type"
+    
+    # Date patterns - add formats you find on the site
+    date_patterns:
+      - "%B %d, %Y"
+      - "%B %d, %Y at %I:%M %p"
+      - "%a, %B %d, %Y"
+    
+    # Pagination - check the site's pagination method
+    pagination:
+      type: "infinite_scroll"  # or "button", "url_param", "ajax"
+      button_selector: "button:contains('load more')"
+      ajax_endpoint: null
+      url_param_template: null
+    
+    # Rate limiting - be respectful
+    rate_limit:
+      requests_per_minute: 30
+      respect_robots_txt: true
+      crawl_delay_override: 2.0
+    
+    # Boilerplate text to filter out
+    boilerplate_phrases:
+      - "Subscribe to CNN"
+      - "Follow us on"
+      - "Related articles"
+      - "CNN Headlines"
+      - "Sign up for our newsletter"
+    
+    # Anti-scraping measures
+    anti_scraping:
+      paywall_keywords:
+        - "Sign in"
+        - "Subscribe"
+        - "Premium content"

@@ -227,7 +227,7 @@ def main():
     
     parser.add_argument(
         '--site',
-        help='Specific site to process (e.g., "https://www.the-star.co.ke")'
+        help='Specific site to process '
     )
     
     parser.add_argument(
