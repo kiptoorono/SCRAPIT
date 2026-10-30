@@ -1,8 +1,8 @@
-# SCRAP!T - Universal News Scraper
+# SCRAP!T -  News/Article/Blog Post Web Scraper
 
 ![SCRAP!T Logo](src/Scrapit.png)
 
-A configuration-driven news scraper for any news website. No hardcoded site logic—all configuration lives in `sites_config.yaml`.
+An automated Web Scraper & Crawler that browses the web, locate relevant web pages, and extract specific information by using smart rules, logical assumptions, and structural patterns (heuristics) `sites_config.yaml`.
 
 ## Features
 
