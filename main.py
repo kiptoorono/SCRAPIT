@@ -1,14 +1,3 @@
-"""
-SCRAP!T - Universal News Scraper
-
-Configuration-driven scraper with:
-- Declarative site configuration (sites_config.yaml)
-- Four-tier fallback extraction system
-- Decoupled Scout/Harvester architecture
-- Sticky sessions with TLS mimicry
-- Standardized data pipeline
-"""
-
 import asyncio
 import json
 import logging
