@@ -6,12 +6,10 @@ A configuration-driven news scraper for any news website. No hardcoded site logi
 
 ## Features
 
-- **Configuration-Driven**: All site logic in YAML, no code changes
-- **4-Tier Extraction**: CSS selectors → metadata → heuristics → failure logging
+- **Configuration-Driven**: All site logic in YAML
+- **Heuristic Extraction**: CSS selectors → metadata → heuristics → failure logging
 - **Anti-Detection**: Browser fingerprints, TLS mimicry, sticky sessions, adaptive throttling
 - **Proxy Rotation**: Rotate IPs to avoid IP blocking and site detection, maintain access when your own IP is blocked
-- **Resumable**: Persistent state—stop and resume without data loss
-- **Data Quality**: Date normalization, content cleaning, author standardization
 
 ## Quick Start
 
@@ -90,11 +88,12 @@ requirements.txt     # Python dependencies
 
 ## Ethical Usage
 
+#BE KIND TO SERVERS, DO NOT CAUSE SERVICE DISTRUPTION
+
 Before scraping any site:
 - Check `robots.txt` and respect crawl-delay
 - Review Terms of Service
-- Use appropriate rate limits
-- Contact site owners for permission
+- Use appropriate rate limits 
 - See [QUICKSTART.md](QUICKSTART.md#ethical--legal-guidelines) for full guidelines
 
 ## Contributing
